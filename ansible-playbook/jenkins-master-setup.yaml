@@ -1,0 +1,39 @@
+---
+- name: This playbook for Jenkins installtion on ubuntu server.
+  hosts: jenkins-master
+  become: true
+  tasks:
+  - name: Add Jenkins installtion key on ubuntu server.
+    apt_key:
+      url:  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+      state: present
+
+  - name: Add Jenkins repository on ubuntu server
+    apt_repository:
+      repo: 'deb https://pkg.jenkins.io/debian-stable binary/'
+      state: present
+
+  - name: update ubuntu repo and cache
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+
+  - name: Install java for jenkins on ubuntu because jenkins is written in java
+    apt:
+      name: openjdk-17-jdk
+      state: present
+
+  - name: Now, Install jenkins on ubuntu server.
+    apt:
+      name: jenkins
+      state: present
+
+  - name: After, Installtion start Jenkins server.
+    service:
+      name: jenkins
+      state: started
+
+  - name: Enable jenkins server. So, whenever Jenkins server is rebooted then Jenkins service is start on boot time.
+    service:
+      name: jenkins
+      enabled: yes
